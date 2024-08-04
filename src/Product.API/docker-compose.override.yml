@@ -1,0 +1,10 @@
+﻿version: '3.8'
+
+services:
+  sqlserver:
+    environment:
+      SA_PASSWORD: "Your_password123"
+
+  kafka:
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
