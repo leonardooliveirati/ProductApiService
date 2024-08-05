@@ -37,8 +37,9 @@ Passo 2: O banco de dados SQLite será criado automaticamente.
 Passo 3: Executar Migrações do Entity Framework
 No diretório do projeto, execute os seguintes comandos para aplicar as migrações do Entity Framework:
 
-add-migration InitialMigrate
-update-database
+- add-migration InitialMigrate
+
+- update-database
 
 ## Uso da API
 Documentação Swagger
