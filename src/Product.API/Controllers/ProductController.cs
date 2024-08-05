@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Product.Application.DTOs;
 using Product.Application.Services;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Product.API.Controllers;
 
@@ -46,7 +45,6 @@ public class ProductController : ControllerBase
                 // Handle error accordingly
                 return StatusCode(500, "Failed to send message to Kafka");
             }
-
         }
         catch (ArgumentException ex)
         {
@@ -99,8 +97,30 @@ public class ProductController : ControllerBase
         try
         {
             await _productService.UpdateProductAsync(productDto);
-            _cache.Remove(productDto.Id); // Remove from cache to get updated data in future requests
+            _cache.Remove(productDto.Id);
             return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Ocorreu um erro interno no servidor. Tente novamente mais tarde." });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllProducts()
+    {
+        try
+        {
+            var products = await _productService.GetAllProductsAsync();
+            return Ok(products);
         }
         catch (ArgumentException ex)
         {
