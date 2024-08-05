@@ -11,6 +11,7 @@ Este projeto é uma API de serviço de produtos construída com .NET 8.0, utiliz
 - Automapper
 - Dependency Injection
 - Swagger
+- FluentValidation
 
 ## Funcionalidades
 
