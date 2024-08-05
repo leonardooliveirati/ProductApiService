@@ -1,7 +1,5 @@
-using AutoMapper;
 using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Product.API;
 using Product.Application.Services;
@@ -59,8 +57,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseAuthorization();        
-        app.MapControllers();        
-        app.Run();   
+        app.UseAuthorization();
+        app.MapControllers();
+        app.Run();
     }
 }
