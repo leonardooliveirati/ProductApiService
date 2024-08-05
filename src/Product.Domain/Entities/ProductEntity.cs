@@ -1,5 +1,4 @@
-﻿using System;
-namespace Product.Domain.Entities;
+﻿namespace Product.Domain.Entities;
 
 public class ProductEntity
 {

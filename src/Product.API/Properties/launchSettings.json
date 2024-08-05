@@ -48,5 +48,11 @@
       "applicationUrl": "http://localhost:26991",
       "sslPort": 44354
     }
+  },  
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=sqlserver;Database=ProductDb;User Id=sa;Password=Product@123;"
+  },
+  "Kafka": {
+    "BootstrapServers": "localhost:9092"
   }
 }
