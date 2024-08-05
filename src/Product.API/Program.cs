@@ -1,7 +1,9 @@
 using Confluent.Kafka;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Product.API;
+using Product.Application.DTOs;
 using Product.Application.Services;
 using Product.Domain.Interfaces;
 using Product.Infrastructure.Data;
@@ -16,7 +18,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+        .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
 
         builder.Services.AddDbContext<ProductContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
