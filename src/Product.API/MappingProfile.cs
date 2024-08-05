@@ -5,7 +5,8 @@ using Product.Domain.Entities;
 namespace Product.API;
 
 public class MappingProfile : Profile
-{    public MappingProfile()
+{
+    public MappingProfile()
     {
         CreateMap<ProductEntity, ProductDto>().ReverseMap();
     }

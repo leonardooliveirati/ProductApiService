@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Product.Application.DTOs;
 using Product.Application.Services;
-using System;
-using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Product.API.Controllers;
@@ -30,33 +29,90 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
     {
-        await _productService.AddProductAsync(productDto);
-        var productJson = System.Text.Json.JsonSerializer.Serialize(productDto);
-        await _producer.ProduceAsync("Produtos", new Message<Null, string> { Value = productJson });
-        return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
+        try
+        {
+            await _productService.AddProductAsync(productDto);
+            var productJson = JsonSerializer.Serialize(productDto);
+
+            // Publica a mensagem no Kafka
+            var deliveryReport = await _producer.ProduceAsync("Produtos", new Message<Null, string> { Value = productJson });
+
+            if (deliveryReport.Status == PersistenceStatus.Persisted)
+            {
+                return CreatedAtAction(nameof(GetProductById), new { id = productDto.Id }, productDto);
+            }
+            else
+            {
+                // Handle error accordingly
+                return StatusCode(500, "Failed to send message to Kafka");
+            }
+
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Ocorreu um erro interno no servidor. Tente novamente mais tarde." });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(int id)
     {
-        if (!_cache.TryGetValue(id, out ProductDto productDto))
+        try
         {
-            productDto = await _productService.GetProductByIdAsync(id);
-            if (productDto == null)
+            if (!_cache.TryGetValue(id, out ProductDto productDto))
             {
-                return NotFound();
+                productDto = await _productService.GetProductByIdAsync(id);
+                if (productDto == null)
+                {
+                    return NotFound();
+                }
+                _cache.Set(id, productDto, TimeSpan.FromMinutes(5));
             }
-            _cache.Set(id, productDto, TimeSpan.FromMinutes(5));
+            return Ok(productDto);
+
         }
-        return Ok(productDto);
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Ocorreu um erro interno no servidor. Tente novamente mais tarde." });
+        }
     }
 
     [HttpPut]
     public async Task<IActionResult> UpdateProduct([FromBody] ProductDto productDto)
     {
-        await _productService.UpdateProductAsync(productDto);
-        _cache.Remove(productDto.Id); // Remove from cache to get updated data in future requests
-        return NoContent();
+        try
+        {
+            await _productService.UpdateProductAsync(productDto);
+            _cache.Remove(productDto.Id); // Remove from cache to get updated data in future requests
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { error = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Ocorreu um erro interno no servidor. Tente novamente mais tarde." });
+        }
     }
-
 }
