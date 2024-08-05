@@ -46,16 +46,16 @@ Documentação Swagger
 A documentação da API pode ser acessada via Swagger em https://localhost:7013/swagger/index.html ou http://localhost:5000/swagger/index.html.
 
 Endpoints
-POST /api/product - Cadastro de um novo produto.
-GET /api/product/{id} - Busca de um produto por ID (com cache).
-PUT /api/product - Atualização de um produto.
-Contribuição
-Faça um fork do repositório.
-Crie uma branch para sua feature (git checkout -b feature/nova-feature).
-Commit suas mudanças (git commit -m 'Adicionar nova feature').
-Faça push para a branch (git push origin feature/nova-feature).
-Abra um Pull Request.
-Licença
+- POST /api/product - Cadastro de um novo produto.
+- GET /api/product/{id} - Busca de um produto por ID (com cache).
+- PUT /api/product - Atualização de um produto.
+- Contribuição
+- Faça um fork do repositório.
+- Crie uma branch para sua feature (git checkout -b feature/nova-feature).
+- Commit suas mudanças (git commit -m 'Adicionar nova feature').
+- Faça push para a branch (git push origin feature/nova-feature).
+- Abra um Pull Request.
+- Licença
 Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
 ### Passo 1: Clonar o Repositório
