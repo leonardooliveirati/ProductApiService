@@ -12,7 +12,7 @@ namespace Product.API.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
     private readonly IMemoryCache _cache;
     private readonly IProducer<Null, string> _producer;
     private readonly IMapper _mapper;
